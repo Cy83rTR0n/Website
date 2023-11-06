@@ -1,1 +1,4 @@
 
+[submodule "themes/m10c"]
+	path = themes/gokarna
+	url = https://github.com/526avijitgupta/gokarna
