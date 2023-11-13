@@ -1,0 +1,146 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{--accent-color:#FF4D4D}</style><title>Fuzzing - 1</title>
+<meta name=description content="Basics of Blind Fuzzing"><meta name=keywords content="blog,gokarna,hugo,Fuzzing"><meta property="og:url" content="https://Cy83rTR0n.github.io/website/posts/fuzzing-basics/"><meta property="og:type" content="website"><meta property="og:title" content="Fuzzing - 1"><meta property="og:description" content="Basics of Blind Fuzzing"><meta property="og:image" content="https://images.unsplash.com/photo-1544890225-2f3faec4cd60?auto=format&amp;fit=crop&amp;q=60&amp;w=500&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aGFja2VyfGVufDB8fDB8fHww"><meta property="og:image:secure_url" content="https://images.unsplash.com/photo-1544890225-2f3faec4cd60?auto=format&amp;fit=crop&amp;q=60&amp;w=500&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aGFja2VyfGVufDB8fDB8fHww"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="Fuzzing - 1"><meta name=twitter:description content="Basics of Blind Fuzzing"><meta property="twitter:domain" content="https://Cy83rTR0n.github.io/website/posts/fuzzing-basics/"><meta property="twitter:url" content="https://Cy83rTR0n.github.io/website/posts/fuzzing-basics/"><meta name=twitter:image content="https://images.unsplash.com/photo-1544890225-2f3faec4cd60?auto=format&amp;fit=crop&amp;q=60&amp;w=500&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aGFja2VyfGVufDB8fDB8fHww"><link rel=canonical href=https://Cy83rTR0n.github.io/website/posts/fuzzing-basics/><link rel=stylesheet type=text/css href=/website/css/normalize.min.css media=print><link rel=stylesheet type=text/css href=/website/css/main.min.css><link id=dark-theme rel=stylesheet href=/website/css/dark.min.css><script src=/website/js/bundle.min.edd985581bf860dfb4507e5885197f1680160c7fe19f23b31e183126d99dd596.js integrity="sha256-7dmFWBv4YN+0UH5YhRl/FoAWDH/hnyOzHhgxJtmd1ZY="></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css integrity=sha384-Xi8rHCmBmhbuyyhbI88391ZKP2dmfnOl4rT9ZfRI7mLTdk1wblIUnrIq35nqwEvC crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js integrity=sha384-X/XCfMm41VSsqRNQgDerQczD69XqmjOOOwYQvr/uuC+j4OPoNhVgjdGFwhvN02Ja crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}],throwOnError:!1})})</script></head><body><script type=text/javascript>setThemeByUserPref()</script><header class=header><nav class=header-nav><div class=avatar><a href=https://Cy83rTR0n.github.io/website><img src='https://images.unsplash.com/photo-1544890225-2f3faec4cd60?auto=format&amp;fit=crop&amp;q=60&amp;w=500&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aGFja2VyfGVufDB8fDB8fHww' alt=avatar></a></div><div class=nav-title><a class=nav-brand href=https://Cy83rTR0n.github.io/website>Reverse Engineering Blog</a></div><div class=nav-links><div class=nav-link><a href=https://Cy83rTR0n.github.io/website/><span data-feather=home></span> Home</a></div><div class=nav-link><a href=https://Cy83rTR0n.github.io/website/posts/><span data-feather=book></span> Posts</a></div><div class=nav-link><a href=https://Cy83rTR0n.github.io/website/projects/><span data-feather=code></span> Projects</a></div><div class=nav-link><a href=https://Cy83rTR0n.github.io/website/tags/><span data-feather=tag></span> Tags</a></div><div class=nav-link><a href=https://github.com/Cy83rTR0n><span data-feather=github></span></a></div><div class=nav-link><a href=https://www.reddit.com/user/Cy83rTr0n/><span data-feather=rss></span></a></div><span class=nav-icons-divider></span><div class="nav-link dark-theme-toggle"><span id=dark-theme-toggle-screen-reader-target class=sr-only></span>
+<a><span id=theme-toggle-icon data-feather=moon></span></a></div><div class=nav-link id=hamburger-menu-toggle><span id=hamburger-menu-toggle-screen-reader-target class=sr-only>menu</span>
+<a><span data-feather=menu></span></a></div><ul class="nav-hamburger-list visibility-hidden"><li class=nav-item><a href=https://Cy83rTR0n.github.io/website/><span data-feather=home></span> Home</a></li><li class=nav-item><a href=https://Cy83rTR0n.github.io/website/posts/><span data-feather=book></span> Posts</a></li><li class=nav-item><a href=https://Cy83rTR0n.github.io/website/projects/><span data-feather=code></span> Projects</a></li><li class=nav-item><a href=https://Cy83rTR0n.github.io/website/tags/><span data-feather=tag></span> Tags</a></li><li class=nav-item><a href=https://github.com/Cy83rTR0n><span data-feather=github></span></a></li><li class=nav-item><a href=https://www.reddit.com/user/Cy83rTr0n/><span data-feather=rss></span></a></li><li class="nav-item dark-theme-toggle"><span id=dark-theme-toggle-screen-reader-target class=sr-only>theme</span>
+<a><span id=theme-toggle-icon data-feather=moon></span></a></li></ul></div></nav></header><main id=content><div class="post container"><div class=post-header-section><h1>Fuzzing - 1</h1><small role=doc-subtitle>Basics of Blind Fuzzing</small><p class=post-date>October 25, 2023</p><ul class=post-tags><li class=post-tag><a href=https://Cy83rTR0n.github.io/website/tags/fuzzing>Fuzzing</a></li></ul></div><div class=post-content><p><h1 id=fuzzers-and-fuzzing>Fuzzers and Fuzzing</h1><h3 id=uintroductionu>Introduction</h3><p>Fuzzing is a software testing method that involves sending random or unexpected input to a program to uncover vulnerabilites and bugs. The process includes generating diverse inputs, injecting them into the target software, and observing how it reacts. If the program crashes or exhibits unexpected behavior, it signals potential issues. Fuzzing is valuable for finding security vulnerabilities, and it comes in various types like random, mutation-based and generation-based fuzzing. Many organizations integrate fuzz testing into their development process to enhance software security and reliability.</p><h3 id=uhow-does-a-fuzzer-worksu>How does a fuzzer works??</h3><p>In simple terms a fuzzer is a program written that goes on a mutuate-execute-reapeat loop and keeps on exloring the state space of the program. Point to be noted is that it does these things &ldquo;randomly&rdquo;. Well a fuzzer doesn&rsquo;t actually finds an exploit but gives the paves the pathway for it. The core part of a fuzzer is the mutator itself.</p><h3 id=uso-what-about-the-output-from-the-fuzzeru>So what about the output from the fuzzer!!</h3><p>Well considering me, someone who is like 2 days into fuzzing at the time of writing the post.I believe attaching a debugger to application we aim to fuzz is a nice way to get details about our crash, so that it becomes easy for us to understand whether it is benign or a security vulnerability.</p><h3 id=usome-random-thoughtsu>Some Random Thoughts</h3><ul><li>We tend to aim for specific parts in a program that needs to be fuzzed.</li><li>Old-school fuzzers are the one we are goin to look at this blogpost, which are known as blind-fuzzers.</li><li>Fuzzers mainly look for the &ldquo;low-hanging fruits&rdquo;, meaning easy bugs which might not be visible while manual analysis.</li><li>Fuzzers generally take file as input to fuzz applications.</li></ul><h3 id=ulets-code-oneu>Let&rsquo;s Code One</h3><h4 id=sample-program>Sample Program</h4><pre tabindex=0><code>//C code
+
+
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main(int argc, char **argv){
+    if (argc!=2){
+        return 1;
+    }
+    FILE *f = fopen(argv[1],&#34;rb&#34;);
+    if (f == NULL){
+        return 2;
+    }
+    
+    int w,h;
+    fread(&amp;w,4,1,f);
+    fread(&amp;h,4,1,f);
+    
+    unsigned char *buf = malloc(w*h);
+    
+    for (int j = 0; j &lt; h; j++){
+        fread(&amp;buf[j*w],w,1,f);
+    }
+    
+    fclose(f);
+    return 0;
+}
+</code></pre><h4 id=uexplainationu>Explaination</h4><ol><li>The code reads a file and does some basic file descriptor checking.</li><li>It then assumes that the first 4 bytes of the file when opened in binary mode is the width and then the following 4 bytes is its height.</li><li>We then dynamically allocate memory and the size is the product of both width and height.</li><li>Finally we just read the file data for each &lsquo;h&rsquo; row and the process continues for &lsquo;w&rsquo; bytes.</li></ol><p>So we understand the code nice and clear, now the fuzz-time.</p><h4 id=ufuzzer---codeu>Fuzzer - Code</h4><pre tabindex=0><code>import subprocess
+import random
+import sys
+import struct
+
+def load_file(fname):
+    with open(fname, &#39;rb&#39;) as f:
+        return bytearray(f.read())
+        
+def save_file(fname, data):
+    with open(fname,&#34;wb&#34;) as f:
+        f.write(str(data))
+
+def mutate_bits(data):
+    count = int((len(data)*8) * 0.01)
+    if count == 0:
+        count = 1
+    for _ in range(count):
+        bit = random.randint(0,len(data)*8 - 1)
+        idx_bit = bit % 8
+        idx_byte = bit / 8
+        data[idx_byte] ^= 1 &lt;&lt; idx_bit
+    
+    return data
+
+def mutate_bytes(data):
+    count = int(len(data) * 0.01)
+    if count == 0:
+        count = 1
+    for _ in range(count):
+        data[random.randint(0, len(data)-1)] = random.randint(0,255)
+    return data
+
+def mutate_magic(data):
+
+    numbers = [
+ (1,struct.pack(&#34;B&#34;, 0xff)),
+ (1,struct.pack(&#34;B&#34;, 0x7f)),
+ (1,struct.pack(&#34;B&#34;, 0)),
+ (2,struct.pack(&#34;H&#34;, 0xffff)),
+ (2,struct.pack(&#34;H&#34;, 0)),
+ (4,struct.pack(&#34;I&#34;, 0xffffffff)),
+ (4,struct.pack(&#34;I&#34;, 0)),
+ (4,struct.pack(&#34;I&#34;, 0x80000000)),
+ (4,struct.pack(&#34;I&#34;, 0x40000000)),
+ (4,struct.pack(&#34;I&#34;, 0x7fffffff))
+
+]
+
+    count = int(len(data) * 0.01)
+    if count == 0:
+        count = 1
+
+    for _ in range(count):
+        n_size, n = random.choice(numbers)
+        sz = len(data) - n_size
+        if sz &lt; 0:
+            continue
+        idx = random.randint(0,sz)
+        data[idx:idx + n_size] = bytearray(n)
+    
+    return data
+
+def mutate(data):
+    return random.choice([
+    mutate_bits,
+    mutate_bytes,
+    mutate_magic
+    ])(data[::])
+
+def run(exename):
+    p = subprocess.Popen([&#34;gdb&#34;,&#34;--batch&#34;,&#34;-x&#34;,&#34;detect.gdb&#34;,exename],
+    stdout = subprocess.PIPE,
+    stderr = None)
+    output, _ = p.communicate()
+    if &#34;Program recieved signal&#34; in output:
+        return output.split(&#34;----+----+----+----+&#34;)[1]
+    
+    return None
+    
+input_samples = [
+
+load_file(&#34;input.sample&#34;)
+
+]
+
+i = 0
+while True:
+     i += 1
+     if True:
+         sys.stdout.write(&#34;.&#34;)
+         sys.stdout.flush()
+    mutated_sample = mutate(random.choice(input_samples))
+    save_file(&#34;test.sample&#34;, mutated_sample)
+   
+   output = run(&#34;program&#34;)
+   if output is not None:
+       print(&#34;Crash!&#34;)
+       save_file(&#34;crash.samples.%i&#34; % i, mutated_sample)
+       save_file(&#34;crash.samples.%i.txt&#34; % i, output)
+       print(output)
+</code></pre><h4 id=uexplainationu-1>Explaination</h4><ol><li>the bits funtions mutates individual bits in the data by randomly toggling between them.</li><li>First up it calculates the numbers of bits to mutate, the minimu is 1 as we have taken i% of total bits into consideration.</li><li>It then iterates through range of bits to be mutated, randomly selecting a bit index and calculating the respective byte index and bit index within the byte.</li><li>The selected bit is toggled using a bitwise XOR encryption.</li><li>The bytes functioniterates through the range of bytes to be muted, randomly selecting a byte index and replacing the byte with a random integer value in the range of [0,255].</li><li>The magic function sets some magic numbers.</li><li>After iterating through the range of mutations, randomly selecting a magic number from the list and replacing a portion of the data with the bytes of the chosen magic number.</li><li>The fuzzer code also takes into cosideration of a gdb script which does the job of logging the crashes.</li></ol><h4 id=ugdb-scriptu>gdb-script</h4><pre tabindex=0><code>set height 0
+set disassembly-flavor intel
+echo ----+----+----+----+
+r test.sample
+x/10i $rip
+where
+i r
+echo ----+----+----+----+
+</code></pre><h4 id=uexplainationu-2>Explaination</h4><ol><li>A very simple gdb-script which runs the test.sample file as an input.</li><li>Print the next instructions.</li><li>Find where the crash happened.</li><li>Get the details about where in the call stack we got the error.</li><li>print the values of the registers at that state of crash.</li></ol><h4 id=uits-show-time-u>It&rsquo;s show time !!!</h4><p>Do try out the code for both the vulnerable program and the fuzzer.
+Some of the resuts signify that I have error in my program and some point to internal c library .
+However I would suggest you to try it and have fun!!!!.</p><h1 id=happy-fuzzing>Happy Fuzzing</h1></p></div><div class=prev-next></div><svg id="btt-button" class="arrow-logo" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512" onclick="topFunction()" title="Go to top"><path d="M177 159.7l136 136c9.4 9.4 9.4 24.6.0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9.0L160 255.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9.0L7 329.7c-9.4-9.4-9.4-24.6.0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1z"/></svg><script>let mybutton=document.getElementById("btt-button");window.onscroll=function(){scrollFunction()};function scrollFunction(){document.body.scrollTop>20||document.documentElement.scrollTop>20?mybutton.style.display="block":mybutton.style.display="none"}function topFunction(){smoothScrollToTop()}function smoothScrollToTop(){const e=()=>{const t=document.documentElement.scrollTop||document.body.scrollTop;t>0&&(window.requestAnimationFrame(e),window.scrollTo(0,t-t/8))};e()}</script></div><aside class=post-toc><nav id=toc><nav id=TableOfContents><ul><li><a href=#fuzzers-and-fuzzing>Fuzzers and Fuzzing</a><ul><li><ul><li><a href=#uintroductionu>Introduction</a></li><li><a href=#uhow-does-a-fuzzer-worksu>How does a fuzzer works??</a></li><li><a href=#uso-what-about-the-output-from-the-fuzzeru>So what about the output from the fuzzer!!</a></li><li><a href=#usome-random-thoughtsu>Some Random Thoughts</a></li><li><a href=#ulets-code-oneu>Let&rsquo;s Code One</a><ul><li><a href=#sample-program>Sample Program</a></li><li><a href=#uexplainationu>Explaination</a></li><li><a href=#ufuzzer---codeu>Fuzzer - Code</a></li><li><a href=#uexplainationu-1>Explaination</a></li><li><a href=#ugdb-scriptu>gdb-script</a></li><li><a href=#uexplainationu-2>Explaination</a></li><li><a href=#uits-show-time-u>It&rsquo;s show time !!!</a></li></ul></li></ul></li></ul></li><li><a href=#happy-fuzzing>Happy Fuzzing</a></li></ul></nav></nav></aside></main><footer class=footer><span>&copy; 2023 The Marauders</span>
+<span>Made with &#10084;&#65039; using <a target=_blank href=https://github.com/526avijitgupta/gokarna>Gokarna</a></span></footer></body></html>
