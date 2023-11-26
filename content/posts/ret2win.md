@@ -1,6 +1,6 @@
 ---
 title: "Overflow - 1"
-date: 2019-07-19
+date: 2020-10-20
 description: "Return 2 win"
 tags: ["Binary Exploitation Series"]
 type: post
