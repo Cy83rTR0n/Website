@@ -2,137 +2,138 @@
 <meta name=description content="Basics of Blind Fuzzing"><meta name=keywords content="blog,gokarna,hugo,Fuzzing"><meta property="og:url" content="https://Cy83rTR0n.github.io/website/posts/fuzzing-basics/"><meta property="og:type" content="website"><meta property="og:title" content="Fuzzing - 1"><meta property="og:description" content="Basics of Blind Fuzzing"><meta property="og:image" content="https://images.unsplash.com/photo-1544890225-2f3faec4cd60?auto=format&amp;fit=crop&amp;q=60&amp;w=500&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aGFja2VyfGVufDB8fDB8fHww"><meta property="og:image:secure_url" content="https://images.unsplash.com/photo-1544890225-2f3faec4cd60?auto=format&amp;fit=crop&amp;q=60&amp;w=500&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aGFja2VyfGVufDB8fDB8fHww"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="Fuzzing - 1"><meta name=twitter:description content="Basics of Blind Fuzzing"><meta property="twitter:domain" content="https://Cy83rTR0n.github.io/website/posts/fuzzing-basics/"><meta property="twitter:url" content="https://Cy83rTR0n.github.io/website/posts/fuzzing-basics/"><meta name=twitter:image content="https://images.unsplash.com/photo-1544890225-2f3faec4cd60?auto=format&amp;fit=crop&amp;q=60&amp;w=500&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aGFja2VyfGVufDB8fDB8fHww"><link rel=canonical href=https://Cy83rTR0n.github.io/website/posts/fuzzing-basics/><link rel=stylesheet type=text/css href=/website/css/normalize.min.css media=print><link rel=stylesheet type=text/css href=/website/css/main.min.css><link id=dark-theme rel=stylesheet href=/website/css/dark.min.css><script src=/website/js/bundle.min.edd985581bf860dfb4507e5885197f1680160c7fe19f23b31e183126d99dd596.js integrity="sha256-7dmFWBv4YN+0UH5YhRl/FoAWDH/hnyOzHhgxJtmd1ZY="></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css integrity=sha384-Xi8rHCmBmhbuyyhbI88391ZKP2dmfnOl4rT9ZfRI7mLTdk1wblIUnrIq35nqwEvC crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js integrity=sha384-X/XCfMm41VSsqRNQgDerQczD69XqmjOOOwYQvr/uuC+j4OPoNhVgjdGFwhvN02Ja crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js integrity=sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}],throwOnError:!1})})</script></head><body><script type=text/javascript>setThemeByUserPref()</script><header class=header><nav class=header-nav><div class=avatar><a href=https://Cy83rTR0n.github.io/website><img src='https://images.unsplash.com/photo-1544890225-2f3faec4cd60?auto=format&amp;fit=crop&amp;q=60&amp;w=500&amp;ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aGFja2VyfGVufDB8fDB8fHww' alt=avatar></a></div><div class=nav-title><a class=nav-brand href=https://Cy83rTR0n.github.io/website>Reverse Engineering Blog</a></div><div class=nav-links><div class=nav-link><a href=https://Cy83rTR0n.github.io/website/><span data-feather=home></span> Home</a></div><div class=nav-link><a href=https://Cy83rTR0n.github.io/website/posts/><span data-feather=book></span> Posts</a></div><div class=nav-link><a href=https://Cy83rTR0n.github.io/website/projects/><span data-feather=code></span> Projects</a></div><div class=nav-link><a href=https://Cy83rTR0n.github.io/website/tags/><span data-feather=tag></span> Tags</a></div><div class=nav-link><a href=https://github.com/Cy83rTR0n><span data-feather=github></span></a></div><div class=nav-link><a href=https://www.reddit.com/user/Cy83rTr0n/><span data-feather=rss></span></a></div><span class=nav-icons-divider></span><div class="nav-link dark-theme-toggle"><span id=dark-theme-toggle-screen-reader-target class=sr-only></span>
 <a><span id=theme-toggle-icon data-feather=moon></span></a></div><div class=nav-link id=hamburger-menu-toggle><span id=hamburger-menu-toggle-screen-reader-target class=sr-only>menu</span>
 <a><span data-feather=menu></span></a></div><ul class="nav-hamburger-list visibility-hidden"><li class=nav-item><a href=https://Cy83rTR0n.github.io/website/><span data-feather=home></span> Home</a></li><li class=nav-item><a href=https://Cy83rTR0n.github.io/website/posts/><span data-feather=book></span> Posts</a></li><li class=nav-item><a href=https://Cy83rTR0n.github.io/website/projects/><span data-feather=code></span> Projects</a></li><li class=nav-item><a href=https://Cy83rTR0n.github.io/website/tags/><span data-feather=tag></span> Tags</a></li><li class=nav-item><a href=https://github.com/Cy83rTR0n><span data-feather=github></span></a></li><li class=nav-item><a href=https://www.reddit.com/user/Cy83rTr0n/><span data-feather=rss></span></a></li><li class="nav-item dark-theme-toggle"><span id=dark-theme-toggle-screen-reader-target class=sr-only>theme</span>
-<a><span id=theme-toggle-icon data-feather=moon></span></a></li></ul></div></nav></header><main id=content><div class="post container"><div class=post-header-section><h1>Fuzzing - 1</h1><small role=doc-subtitle>Basics of Blind Fuzzing</small><p class=post-date>October 25, 2023</p><ul class=post-tags><li class=post-tag><a href=https://Cy83rTR0n.github.io/website/tags/fuzzing>Fuzzing</a></li></ul></div><div class=post-content><p><h1 id=fuzzers-and-fuzzing>Fuzzers and Fuzzing</h1><h3 id=uintroductionu>Introduction</h3><p>Fuzzing is a software testing method that involves sending random or unexpected input to a program to uncover vulnerabilites and bugs. The process includes generating diverse inputs, injecting them into the target software, and observing how it reacts. If the program crashes or exhibits unexpected behavior, it signals potential issues. Fuzzing is valuable for finding security vulnerabilities, and it comes in various types like random, mutation-based and generation-based fuzzing. Many organizations integrate fuzz testing into their development process to enhance software security and reliability.</p><h3 id=uhow-does-a-fuzzer-worksu>How does a fuzzer works??</h3><p>In simple terms a fuzzer is a program written that goes on a mutuate-execute-reapeat loop and keeps on exloring the state space of the program. Point to be noted is that it does these things &ldquo;randomly&rdquo;. Well a fuzzer doesn&rsquo;t actually finds an exploit but gives the paves the pathway for it. The core part of a fuzzer is the mutator itself.</p><h3 id=uso-what-about-the-output-from-the-fuzzeru>So what about the output from the fuzzer!!</h3><p>Well considering me, someone who is like 2 days into fuzzing at the time of writing the post.I believe attaching a debugger to application we aim to fuzz is a nice way to get details about our crash, so that it becomes easy for us to understand whether it is benign or a security vulnerability.</p><h3 id=usome-random-thoughtsu>Some Random Thoughts</h3><ul><li>We tend to aim for specific parts in a program that needs to be fuzzed.</li><li>Old-school fuzzers are the one we are goin to look at this blogpost, which are known as blind-fuzzers.</li><li>Fuzzers mainly look for the &ldquo;low-hanging fruits&rdquo;, meaning easy bugs which might not be visible while manual analysis.</li><li>Fuzzers generally take file as input to fuzz applications.</li></ul><h3 id=ulets-code-oneu>Let&rsquo;s Code One</h3><h4 id=sample-program>Sample Program</h4><pre tabindex=0><code>//C code
-
-
-#include &lt;stdio.h&gt;
-#include &lt;string.h&gt;
-#include &lt;stdlib.h&gt;
-
-int main(int argc, char **argv){
-    if (argc!=2){
-        return 1;
-    }
-    FILE *f = fopen(argv[1],&#34;rb&#34;);
-    if (f == NULL){
-        return 2;
-    }
-    
-    int w,h;
-    fread(&amp;w,4,1,f);
-    fread(&amp;h,4,1,f);
-    
-    unsigned char *buf = malloc(w*h);
-    
-    for (int j = 0; j &lt; h; j++){
-        fread(&amp;buf[j*w],w,1,f);
-    }
-    
-    fclose(f);
-    return 0;
-}
-</code></pre><h4 id=uexplainationu>Explaination</h4><ol><li>The code reads a file and does some basic file descriptor checking.</li><li>It then assumes that the first 4 bytes of the file when opened in binary mode is the width and then the following 4 bytes is its height.</li><li>We then dynamically allocate memory and the size is the product of both width and height.</li><li>Finally we just read the file data for each &lsquo;h&rsquo; row and the process continues for &lsquo;w&rsquo; bytes.</li></ol><p>So we understand the code nice and clear, now the fuzz-time.</p><h4 id=ufuzzer---codeu>Fuzzer - Code</h4><pre tabindex=0><code>import subprocess
-import random
-import sys
-import struct
-
-def load_file(fname):
-    with open(fname, &#39;rb&#39;) as f:
-        return bytearray(f.read())
-        
-def save_file(fname, data):
-    with open(fname,&#34;wb&#34;) as f:
-        f.write(str(data))
-
-def mutate_bits(data):
-    count = int((len(data)*8) * 0.01)
-    if count == 0:
-        count = 1
-    for _ in range(count):
-        bit = random.randint(0,len(data)*8 - 1)
-        idx_bit = bit % 8
-        idx_byte = bit / 8
-        data[idx_byte] ^= 1 &lt;&lt; idx_bit
-    
-    return data
-
-def mutate_bytes(data):
-    count = int(len(data) * 0.01)
-    if count == 0:
-        count = 1
-    for _ in range(count):
-        data[random.randint(0, len(data)-1)] = random.randint(0,255)
-    return data
-
-def mutate_magic(data):
-
-    numbers = [
- (1,struct.pack(&#34;B&#34;, 0xff)),
- (1,struct.pack(&#34;B&#34;, 0x7f)),
- (1,struct.pack(&#34;B&#34;, 0)),
- (2,struct.pack(&#34;H&#34;, 0xffff)),
- (2,struct.pack(&#34;H&#34;, 0)),
- (4,struct.pack(&#34;I&#34;, 0xffffffff)),
- (4,struct.pack(&#34;I&#34;, 0)),
- (4,struct.pack(&#34;I&#34;, 0x80000000)),
- (4,struct.pack(&#34;I&#34;, 0x40000000)),
- (4,struct.pack(&#34;I&#34;, 0x7fffffff))
-
-]
-
-    count = int(len(data) * 0.01)
-    if count == 0:
-        count = 1
-
-    for _ in range(count):
-        n_size, n = random.choice(numbers)
-        sz = len(data) - n_size
-        if sz &lt; 0:
-            continue
-        idx = random.randint(0,sz)
-        data[idx:idx + n_size] = bytearray(n)
-    
-    return data
-
-def mutate(data):
-    return random.choice([
-    mutate_bits,
-    mutate_bytes,
-    mutate_magic
-    ])(data[::])
-
-def run(exename):
-    p = subprocess.Popen([&#34;gdb&#34;,&#34;--batch&#34;,&#34;-x&#34;,&#34;detect.gdb&#34;,exename],
-    stdout = subprocess.PIPE,
-    stderr = None)
-    output, _ = p.communicate()
-    if &#34;Program recieved signal&#34; in output:
-        return output.split(&#34;----+----+----+----+&#34;)[1]
-    
-    return None
-    
-input_samples = [
-
-load_file(&#34;input.sample&#34;)
-
-]
-
-i = 0
-while True:
-     i += 1
-     if True:
-         sys.stdout.write(&#34;.&#34;)
-         sys.stdout.flush()
-    mutated_sample = mutate(random.choice(input_samples))
-    save_file(&#34;test.sample&#34;, mutated_sample)
-   
-   output = run(&#34;program&#34;)
-   if output is not None:
-       print(&#34;Crash!&#34;)
-       save_file(&#34;crash.samples.%i&#34; % i, mutated_sample)
-       save_file(&#34;crash.samples.%i.txt&#34; % i, output)
-       print(output)
-</code></pre><h4 id=uexplainationu-1>Explaination</h4><ol><li>the bits funtions mutates individual bits in the data by randomly toggling between them.</li><li>First up it calculates the numbers of bits to mutate, the minimu is 1 as we have taken i% of total bits into consideration.</li><li>It then iterates through range of bits to be mutated, randomly selecting a bit index and calculating the respective byte index and bit index within the byte.</li><li>The selected bit is toggled using a bitwise XOR encryption.</li><li>The bytes functioniterates through the range of bytes to be muted, randomly selecting a byte index and replacing the byte with a random integer value in the range of [0,255].</li><li>The magic function sets some magic numbers.</li><li>After iterating through the range of mutations, randomly selecting a magic number from the list and replacing a portion of the data with the bytes of the chosen magic number.</li><li>The fuzzer code also takes into cosideration of a gdb script which does the job of logging the crashes.</li></ol><h4 id=ugdb-scriptu>gdb-script</h4><pre tabindex=0><code>set height 0
+<a><span id=theme-toggle-icon data-feather=moon></span></a></li></ul></div></nav></header><main id=content><div class="post container"><div class=post-header-section><h1>Fuzzing - 1</h1><small role=doc-subtitle>Basics of Blind Fuzzing</small><p class=post-date>October 25, 2023</p><ul class=post-tags><li class=post-tag><a href=https://Cy83rTR0n.github.io/website/tags/fuzzing>Fuzzing</a></li></ul></div><div class=post-content><p><h1 id=fuzzers-and-fuzzing>Fuzzers and Fuzzing</h1><h3 id=uintroductionu>Introduction</h3><p>Fuzzing is a software testing method that involves sending random or unexpected input to a program to uncover vulnerabilites and bugs. The process includes generating diverse inputs, injecting them into the target software, and observing how it reacts. If the program crashes or exhibits unexpected behavior, it signals potential issues. Fuzzing is valuable for finding security vulnerabilities, and it comes in various types like random, mutation-based and generation-based fuzzing. Many organizations integrate fuzz testing into their development process to enhance software security and reliability.</p><h3 id=uhow-does-a-fuzzer-worksu>How does a fuzzer works??</h3><p>In simple terms a fuzzer is a program written that goes on a mutuate-execute-reapeat loop and keeps on exloring the state space of the program. Point to be noted is that it does these things &ldquo;randomly&rdquo;. Well a fuzzer doesn&rsquo;t actually finds an exploit but gives the paves the pathway for it. The core part of a fuzzer is the mutator itself.</p><h3 id=uso-what-about-the-output-from-the-fuzzeru>So what about the output from the fuzzer!!</h3><p>Well considering me, someone who is like 2 days into fuzzing at the time of writing the post.I believe attaching a debugger to application we aim to fuzz is a nice way to get details about our crash, so that it becomes easy for us to understand whether it is benign or a security vulnerability.</p><h3 id=usome-random-thoughtsu>Some Random Thoughts</h3><ul><li>We tend to aim for specific parts in a program that needs to be fuzzed.</li><li>Old-school fuzzers are the one we are goin to look at this blogpost, which are known as blind-fuzzers.</li><li>Fuzzers mainly look for the &ldquo;low-hanging fruits&rdquo;, meaning easy bugs which might not be visible while manual analysis.</li><li>Fuzzers generally take file as input to fuzz applications.</li></ul><h3 id=ulets-code-oneu>Let&rsquo;s Code One</h3><h4 id=sample-program>Sample Program</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>//C code
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>int</span> argc, <span style=color:#66d9ef>char</span> <span style=color:#f92672>**</span>argv){
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (argc<span style=color:#f92672>!=</span><span style=color:#ae81ff>2</span>){
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    FILE <span style=color:#f92672>*</span>f <span style=color:#f92672>=</span> <span style=color:#a6e22e>fopen</span>(argv[<span style=color:#ae81ff>1</span>],<span style=color:#e6db74>&#34;rb&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (f <span style=color:#f92672>==</span> NULL){
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>2</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> w,h;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>fread</span>(<span style=color:#f92672>&amp;</span>w,<span style=color:#ae81ff>4</span>,<span style=color:#ae81ff>1</span>,f);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>fread</span>(<span style=color:#f92672>&amp;</span>h,<span style=color:#ae81ff>4</span>,<span style=color:#ae81ff>1</span>,f);
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>buf <span style=color:#f92672>=</span> <span style=color:#a6e22e>malloc</span>(w<span style=color:#f92672>*</span>h);
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> j <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; j <span style=color:#f92672>&lt;</span> h; j<span style=color:#f92672>++</span>){
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>fread</span>(<span style=color:#f92672>&amp;</span>buf[j<span style=color:#f92672>*</span>w],w,<span style=color:#ae81ff>1</span>,f);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>fclose</span>(f);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h4 id=uexplainationu>Explaination</h4><ol><li>The code reads a file and does some basic file descriptor checking.</li><li>It then assumes that the first 4 bytes of the file when opened in binary mode is the width and then the following 4 bytes is its height.</li><li>We then dynamically allocate memory and the size is the product of both width and height.</li><li>Finally we just read the file data for each &lsquo;h&rsquo; row and the process continues for &lsquo;w&rsquo; bytes.</li></ol><p>So we understand the code nice and clear, now the fuzz-time.</p><h4 id=ufuzzer---codeu>Fuzzer - Code</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> subprocess
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> random
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> sys
+</span></span><span style=display:flex><span><span style=color:#f92672>import</span> struct
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>load_file</span>(fname):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>with</span> open(fname, <span style=color:#e6db74>&#39;rb&#39;</span>) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> bytearray(f<span style=color:#f92672>.</span>read())
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>save_file</span>(fname, data):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>with</span> open(fname,<span style=color:#e6db74>&#34;wb&#34;</span>) <span style=color:#66d9ef>as</span> f:
+</span></span><span style=display:flex><span>        f<span style=color:#f92672>.</span>write(str(data))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>mutate_bits</span>(data):
+</span></span><span style=display:flex><span>    count <span style=color:#f92672>=</span> int((len(data)<span style=color:#f92672>*</span><span style=color:#ae81ff>8</span>) <span style=color:#f92672>*</span> <span style=color:#ae81ff>0.01</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> count <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>:
+</span></span><span style=display:flex><span>        count <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> _ <span style=color:#f92672>in</span> range(count):
+</span></span><span style=display:flex><span>        bit <span style=color:#f92672>=</span> random<span style=color:#f92672>.</span>randint(<span style=color:#ae81ff>0</span>,len(data)<span style=color:#f92672>*</span><span style=color:#ae81ff>8</span> <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>        idx_bit <span style=color:#f92672>=</span> bit <span style=color:#f92672>%</span> <span style=color:#ae81ff>8</span>
+</span></span><span style=display:flex><span>        idx_byte <span style=color:#f92672>=</span> bit <span style=color:#f92672>/</span> <span style=color:#ae81ff>8</span>
+</span></span><span style=display:flex><span>        data[idx_byte] <span style=color:#f92672>^=</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>&lt;&lt;</span> idx_bit
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> data
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>mutate_bytes</span>(data):
+</span></span><span style=display:flex><span>    count <span style=color:#f92672>=</span> int(len(data) <span style=color:#f92672>*</span> <span style=color:#ae81ff>0.01</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> count <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>:
+</span></span><span style=display:flex><span>        count <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> _ <span style=color:#f92672>in</span> range(count):
+</span></span><span style=display:flex><span>        data[random<span style=color:#f92672>.</span>randint(<span style=color:#ae81ff>0</span>, len(data)<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)] <span style=color:#f92672>=</span> random<span style=color:#f92672>.</span>randint(<span style=color:#ae81ff>0</span>,<span style=color:#ae81ff>255</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> data
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>mutate_magic</span>(data):
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    numbers <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span> (<span style=color:#ae81ff>1</span>,struct<span style=color:#f92672>.</span>pack(<span style=color:#e6db74>&#34;B&#34;</span>, <span style=color:#ae81ff>0xff</span>)),
+</span></span><span style=display:flex><span> (<span style=color:#ae81ff>1</span>,struct<span style=color:#f92672>.</span>pack(<span style=color:#e6db74>&#34;B&#34;</span>, <span style=color:#ae81ff>0x7f</span>)),
+</span></span><span style=display:flex><span> (<span style=color:#ae81ff>1</span>,struct<span style=color:#f92672>.</span>pack(<span style=color:#e6db74>&#34;B&#34;</span>, <span style=color:#ae81ff>0</span>)),
+</span></span><span style=display:flex><span> (<span style=color:#ae81ff>2</span>,struct<span style=color:#f92672>.</span>pack(<span style=color:#e6db74>&#34;H&#34;</span>, <span style=color:#ae81ff>0xffff</span>)),
+</span></span><span style=display:flex><span> (<span style=color:#ae81ff>2</span>,struct<span style=color:#f92672>.</span>pack(<span style=color:#e6db74>&#34;H&#34;</span>, <span style=color:#ae81ff>0</span>)),
+</span></span><span style=display:flex><span> (<span style=color:#ae81ff>4</span>,struct<span style=color:#f92672>.</span>pack(<span style=color:#e6db74>&#34;I&#34;</span>, <span style=color:#ae81ff>0xffffffff</span>)),
+</span></span><span style=display:flex><span> (<span style=color:#ae81ff>4</span>,struct<span style=color:#f92672>.</span>pack(<span style=color:#e6db74>&#34;I&#34;</span>, <span style=color:#ae81ff>0</span>)),
+</span></span><span style=display:flex><span> (<span style=color:#ae81ff>4</span>,struct<span style=color:#f92672>.</span>pack(<span style=color:#e6db74>&#34;I&#34;</span>, <span style=color:#ae81ff>0x80000000</span>)),
+</span></span><span style=display:flex><span> (<span style=color:#ae81ff>4</span>,struct<span style=color:#f92672>.</span>pack(<span style=color:#e6db74>&#34;I&#34;</span>, <span style=color:#ae81ff>0x40000000</span>)),
+</span></span><span style=display:flex><span> (<span style=color:#ae81ff>4</span>,struct<span style=color:#f92672>.</span>pack(<span style=color:#e6db74>&#34;I&#34;</span>, <span style=color:#ae81ff>0x7fffffff</span>))
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    count <span style=color:#f92672>=</span> int(len(data) <span style=color:#f92672>*</span> <span style=color:#ae81ff>0.01</span>)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> count <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>:
+</span></span><span style=display:flex><span>        count <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> _ <span style=color:#f92672>in</span> range(count):
+</span></span><span style=display:flex><span>        n_size, n <span style=color:#f92672>=</span> random<span style=color:#f92672>.</span>choice(numbers)
+</span></span><span style=display:flex><span>        sz <span style=color:#f92672>=</span> len(data) <span style=color:#f92672>-</span> n_size
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> sz <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>:
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>continue</span>
+</span></span><span style=display:flex><span>        idx <span style=color:#f92672>=</span> random<span style=color:#f92672>.</span>randint(<span style=color:#ae81ff>0</span>,sz)
+</span></span><span style=display:flex><span>        data[idx:idx <span style=color:#f92672>+</span> n_size] <span style=color:#f92672>=</span> bytearray(n)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> data
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>mutate</span>(data):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> random<span style=color:#f92672>.</span>choice([
+</span></span><span style=display:flex><span>    mutate_bits,
+</span></span><span style=display:flex><span>    mutate_bytes,
+</span></span><span style=display:flex><span>    mutate_magic
+</span></span><span style=display:flex><span>    ])(data[::])
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>run</span>(exename):
+</span></span><span style=display:flex><span>    p <span style=color:#f92672>=</span> subprocess<span style=color:#f92672>.</span>Popen([<span style=color:#e6db74>&#34;gdb&#34;</span>,<span style=color:#e6db74>&#34;--batch&#34;</span>,<span style=color:#e6db74>&#34;-x&#34;</span>,<span style=color:#e6db74>&#34;detect.gdb&#34;</span>,exename],
+</span></span><span style=display:flex><span>    stdout <span style=color:#f92672>=</span> subprocess<span style=color:#f92672>.</span>PIPE,
+</span></span><span style=display:flex><span>    stderr <span style=color:#f92672>=</span> <span style=color:#66d9ef>None</span>)
+</span></span><span style=display:flex><span>    output, _ <span style=color:#f92672>=</span> p<span style=color:#f92672>.</span>communicate()
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> <span style=color:#e6db74>&#34;Program recieved signal&#34;</span> <span style=color:#f92672>in</span> output:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> output<span style=color:#f92672>.</span>split(<span style=color:#e6db74>&#34;----+----+----+----+&#34;</span>)[<span style=color:#ae81ff>1</span>]
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>None</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>input_samples <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>load_file(<span style=color:#e6db74>&#34;input.sample&#34;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
+</span></span><span style=display:flex><span>     i <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>     <span style=color:#66d9ef>if</span> <span style=color:#66d9ef>True</span>:
+</span></span><span style=display:flex><span>         sys<span style=color:#f92672>.</span>stdout<span style=color:#f92672>.</span>write(<span style=color:#e6db74>&#34;.&#34;</span>)
+</span></span><span style=display:flex><span>         sys<span style=color:#f92672>.</span>stdout<span style=color:#f92672>.</span>flush()
+</span></span><span style=display:flex><span>    mutated_sample <span style=color:#f92672>=</span> mutate(random<span style=color:#f92672>.</span>choice(input_samples))
+</span></span><span style=display:flex><span>    save_file(<span style=color:#e6db74>&#34;test.sample&#34;</span>, mutated_sample)
+</span></span><span style=display:flex><span>   
+</span></span><span style=display:flex><span>   output <span style=color:#f92672>=</span> run(<span style=color:#e6db74>&#34;program&#34;</span>)
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>if</span> output <span style=color:#f92672>is</span> <span style=color:#f92672>not</span> <span style=color:#66d9ef>None</span>:
+</span></span><span style=display:flex><span>       print(<span style=color:#e6db74>&#34;Crash!&#34;</span>)
+</span></span><span style=display:flex><span>       save_file(<span style=color:#e6db74>&#34;crash.samples.</span><span style=color:#e6db74>%i</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>%</span> i, mutated_sample)
+</span></span><span style=display:flex><span>       save_file(<span style=color:#e6db74>&#34;crash.samples.</span><span style=color:#e6db74>%i</span><span style=color:#e6db74>.txt&#34;</span> <span style=color:#f92672>%</span> i, output)
+</span></span><span style=display:flex><span>       print(output)
+</span></span></code></pre></div><h4 id=uexplainationu-1>Explaination</h4><ol><li>the bits funtions mutates individual bits in the data by randomly toggling between them.</li><li>First up it calculates the numbers of bits to mutate, the minimu is 1 as we have taken i% of total bits into consideration.</li><li>It then iterates through range of bits to be mutated, randomly selecting a bit index and calculating the respective byte index and bit index within the byte.</li><li>The selected bit is toggled using a bitwise XOR encryption.</li><li>The bytes functioniterates through the range of bytes to be muted, randomly selecting a byte index and replacing the byte with a random integer value in the range of [0,255].</li><li>The magic function sets some magic numbers.</li><li>After iterating through the range of mutations, randomly selecting a magic number from the list and replacing a portion of the data with the bytes of the chosen magic number.</li><li>The fuzzer code also takes into cosideration of a gdb script which does the job of logging the crashes.</li></ol><h4 id=ugdb-scriptu>gdb-script</h4><pre tabindex=0><code>set height 0
 set disassembly-flavor intel
 echo ----+----+----+----+
 r test.sample
