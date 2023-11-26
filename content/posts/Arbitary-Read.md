@@ -1,6 +1,6 @@
 ---
 title: "Format String - Read"
-date: 2019-06-19
+date: 2020-12-15
 description: "format string vulnerability 1"
 tags: ["Binary Exploitation Series"]
 type: post
