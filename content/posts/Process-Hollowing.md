@@ -30,7 +30,7 @@ I am myself learning from a github repo, so will try to note my learnings into t
 
 ## Let's Code our way through !!
 
-```
+```C++
 	LPSTARTUPINFOA target1 = new STARTUPINFOA();
 	LPPROCESS_INFORMATION target2 = new     PROCESS_INFORMATION();
 	CONTEXT c;
