@@ -32,7 +32,7 @@ Well considering me, someone who is like 2 days into fuzzing at the time of writ
 ### <u>Let's Code One</u>
 
 #### Sample Program
-```
+```C
 //C code
 
 
@@ -74,7 +74,8 @@ So we understand the code nice and clear, now the fuzz-time.
 
 #### <u>Fuzzer - Code</u>
 
-```
+```python
+
 import subprocess
 import random
 import sys
