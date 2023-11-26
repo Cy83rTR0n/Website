@@ -1,6 +1,6 @@
 ---
 title: "Return Oriented Programming Series - 1"
-date: 2019-07-19
+date: 2020-11-19
 description: "ROP"
 tags: ["Binary Exploitation Series"]
 type: post
