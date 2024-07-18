@@ -1,12 +1,16 @@
 ---
 title: "HotPage: The Silent Browser Hijacker"
-date: 2024-07-19
+date: 2024-07-18
 description: "format string vulnerability 1"
 tags: ["Malware Analysis Article"]
 type: post
 weight: 20
 showTableOfContents: false
 ---
+
+
+## HotPage: The Silent Browser Hijacker
+
 
 ### Overiew
 Recently there has been a new adware which goes by the name as "HotPage". It comes in the disguise of giving protection from random advertisements and malicious websites, however in the background it drops a malicious signed driver which gives the attacker privileges to execute arbitary code on Windows hosts.
@@ -53,6 +57,11 @@ For further read please refer to the following:
 
 1. [Alert: HotPage Adware Disguised as Ad Blocker Installs Malicious Kernel Driver](https://thehackernews.com/2024/07/alert-hotpage-adware-disguised-as-ad.html)
 2. [HotPage: Story of a signed, vulnerable, ad-injecting driver](https://www.welivesecurity.com/en/eset-research/hotpage-story-signed-vulnerable-ad-injecting-driver/)
+
+
+
+
+
 
 
 
